@@ -111,3 +111,4 @@ async def update_comment(id: int = Path(...),
             'UPDATE transactions SET comment = ? WHERE rowid = ?',
             (comment, id)
         )
+        await conn.commit()

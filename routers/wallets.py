@@ -25,6 +25,7 @@ async def create_wallet(wallet: WalletIn):
             'INSERT INTO wallets (name, balance) VALUES (:name, :balance)',
             wallet.dict()
         )
+        await conn.commit()
         return resp['last_insert_rowid()']
 
 
@@ -36,6 +37,7 @@ async def rename_wallet(id: int = Path(...),
             'UPDATE wallets SET name = ? WHERE id = ?',
             (name, id)
         )
+        await conn.commit()
 
 
 @router.delete('/{id}/', response_class=Response, status_code=204, responses={409: {'model': str}})
@@ -43,6 +45,8 @@ async def delete_wallet(id: int = Path(...)):
     async with get_connection() as conn:
         try:
             await conn.execute('DELETE FROM wallets WHERE id = ?', (id, ))
+            await conn.commit()
         except aiosqlite.IntegrityError as e:
+            await conn.rollback()
             logging.exception(e)
             raise HTTPException(409)

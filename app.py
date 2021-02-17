@@ -5,7 +5,7 @@ from db.routines import prepare_database, shutdown_database
 from routers import wallets, transactions
 
 
-app = FastAPI()
+app = FastAPI(docs_url='/')
 
 
 @app.on_event('startup')

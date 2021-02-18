@@ -21,7 +21,7 @@ class TransactionIn(BaseModel):
     comment: Optional[str] = Field(None, min_length=1, max_length=64)
 
 class TransactionOut(TransactionIn):
-    id: int = Field(..., alias='rowid')
+    id: int
     created_at: datetime
 
 

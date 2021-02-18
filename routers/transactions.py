@@ -20,7 +20,7 @@ async def list_transactions(page: int = Query(0, ge=0),
                             size: int = Query(10, gt=0, lte=100)):
     async with get_connection() as conn:
         return await conn.execute_fetchall(
-            'SELECT rowid, * FROM transactions ORDER BY created_at DESC '
+            'SELECT rowid AS id, * FROM transactions ORDER BY created_at DESC '
             'LIMIT ? OFFSET ?',
             (size, page * size)
         )

@@ -12,6 +12,7 @@ router = APIRouter(prefix='/transactions')
 
 
 OUR_WALLET_ID=1
+COMMISSION = 0.015
 
 
 @router.get('/', response_model=List[TransactionOut])
@@ -35,7 +36,7 @@ async def create_transaction(transaction: TransactionIn = Body(...),
     if cp == CommissionPayer.both:
         commission = TransactionIn(from_id=transaction.from_id,
                                    to_id=OUR_WALLET_ID,
-                                   amount=transaction.amount * 75 / 1000,
+                                   amount=transaction.amount * COMMISSION / 2,
                                    comment='0.75% commission')
         transactions.append(commission)
         transactions.append(commission.copy(update={'from_id': transaction.to_id}))
@@ -48,7 +49,7 @@ async def create_transaction(transaction: TransactionIn = Body(...),
     elif cp == CommissionPayer.receiver:
         commission = TransactionIn(from_id=transaction.to_id,
                                    to_id=OUR_WALLET_ID,
-                                   amount=transaction.amount * 15 / 100,
+                                   amount=transaction.amount * COMMISSION,
                                    comment='1.5% commission')
         transactions.append(commission)
 
@@ -59,7 +60,7 @@ async def create_transaction(transaction: TransactionIn = Body(...),
     else:
         commission = TransactionIn(from_id=transaction.from_id,
                                    to_id=OUR_WALLET_ID,
-                                   amount=transaction.amount * 15 / 100,
+                                   amount=transaction.amount * COMMISSION,
                                    comment='1.5% commission')
         transactions.append(commission)
 

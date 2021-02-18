@@ -41,7 +41,8 @@ async def rename_wallet(id: int = Path(...),
 
 
 @router.delete('/{id}/', response_class=Response, status_code=204, responses={409: {'model': str}})
-async def delete_wallet(id: int = Path(...)):
+async def delete_wallet(id: int = Path(..., gt=1)):
+    """_Our_ wallet can't be deleted."""
     async with get_connection() as conn:
         try:
             await conn.execute('DELETE FROM wallets WHERE id = ?', (id, ))

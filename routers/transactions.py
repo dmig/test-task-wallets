@@ -107,9 +107,10 @@ async def create_transaction(transaction: TransactionIn = Body(...),
 @router.put('/{id}/', response_class=Response, status_code=204)
 async def update_comment(id: int = Path(...),
                          comment: str = Query(..., min_length=1, max_length=64)):
+    """Commission transaction comments are unmodifiable."""
     async with get_connection() as conn:
         await conn.execute(
-            'UPDATE transactions SET comment = ? WHERE rowid = ?',
-            (comment, id)
+            'UPDATE transactions SET comment = ? WHERE rowid = ? AND to_id != ?',
+            (comment, id, OUR_WALLET_ID)
         )
         await conn.commit()

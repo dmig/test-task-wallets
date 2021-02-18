@@ -22,7 +22,7 @@ async def list_transactions(page: int = Query(0, ge=0),
         return await conn.execute_fetchall(
             'SELECT rowid, * FROM transactions ORDER BY created_at DESC '
             'LIMIT ? OFFSET ?',
-            (page, page * size)
+            (size, page * size)
         )
 
 
